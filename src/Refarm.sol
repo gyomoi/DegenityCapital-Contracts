@@ -234,7 +234,7 @@ contract RefarmDividendTracker is IDividendDistributor {
     }
 }
 
-contract Refarm is ERC20, Ownable {
+contract Refarm is Ownable, IERC20 {
     using SafeMath for uint256;
 
     struct FeeSet {
@@ -251,6 +251,8 @@ contract Refarm is ERC20, Ownable {
     mapping(address => uint256) _balances;
     mapping(address => mapping(address => uint256)) _allowances;
 
+    string _name = "Refarm";
+    string _symbol = "REFARM";
     uint8 constant _decimals = 9;
     uint256 public _totalSupply = 100000000000 * (10**_decimals);
     uint256 public _maxWallet = _totalSupply.mul(3).div(100);
@@ -264,7 +266,8 @@ contract Refarm is ERC20, Ownable {
     FeeSet public sellFees;
     uint256 feeDenominator = 100;
 
-    address treasuryWallet = 0x45EF06F223eDCC1cf0bebB72e6101485632A3f38;
+    address treasuryWallet =
+        address(0x45EF06F223eDCC1cf0bebB72e6101485632A3f38);
     address liquidityWallet;
 
     IUniswapV2Router02 public router;
@@ -292,44 +295,86 @@ contract Refarm is ERC20, Ownable {
         _;
     }
 
-    constructor() ERC20("Refarm", "REFARM") {
-        // Set the Uniswap V2 router
+    constructor() {
         router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         WETH = router.WETH();
         pair = IUniswapV2Factory(router.factory()).createPair(
             WETH,
             address(this)
         );
-        // Approve the router spending
-        _approve(address(router), address(this), ~uint256(0));
+        _allowances[address(this)][address(router)] = ~uint256(0);
 
         dividendTracker = new RefarmDividendTracker();
 
-        liquidityWallet = msg.sender;
+        address owner_ = msg.sender;
+        liquidityWallet = owner_;
 
         excludeFee[liquidityWallet] = true;
-        excludeFee[msg.sender] = true;
+        excludeFee[owner_] = true;
         excludeFee[address(this)] = true;
 
         excludeMaxTxn[liquidityWallet] = true;
-        excludeMaxTxn[msg.sender] = true;
+        excludeMaxTxn[owner_] = true;
         excludeMaxTxn[address(this)] = true;
 
         excludeDividend[pair] = true;
         excludeDividend[address(this)] = true;
         excludeDividend[DEAD] = true;
 
-        setBuyFees(4, 4, 4);
-        setSellFees(4, 4, 4);
+        setBuyFees(5, 5, 4);
+        setSellFees(5, 5, 4);
 
-        // Mint total supply to deployer
-        _mint(msg.sender, _totalSupply);
+        _balances[owner_] = _totalSupply;
+        emit Transfer(address(0), owner_, _totalSupply);
     }
 
     receive() external payable {}
 
-    function decimals() public view virtual override returns (uint8) {
+    function setName(string memory newName, string memory newSymbol)
+        public
+        onlyOwner
+    {
+        _name = newName;
+        _symbol = newSymbol;
+    }
+
+    function totalSupply() external view override returns (uint256) {
+        return _totalSupply;
+    }
+
+    function decimals() external pure returns (uint8) {
         return _decimals;
+    }
+
+    function symbol() external returns (string memory) {
+        return _symbol;
+    }
+
+    function name() external returns (string memory) {
+        return _name;
+    }
+
+    function balanceOf(address account) public view override returns (uint256) {
+        return _balances[account];
+    }
+
+    function allowance(address holder, address spender)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return _allowances[holder][spender];
+    }
+
+    function approve(address spender, uint256 amount)
+        public
+        override
+        returns (bool)
+    {
+        _allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
     }
 
     function approveMax(address spender) external returns (bool) {
@@ -337,8 +382,7 @@ contract Refarm is ERC20, Ownable {
     }
 
     function transfer(address recipient, uint256 amount)
-        public
-        virtual
+        external
         override
         returns (bool)
     {
@@ -349,7 +393,7 @@ contract Refarm is ERC20, Ownable {
         address sender,
         address recipient,
         uint256 amount
-    ) public virtual override returns (bool) {
+    ) external override returns (bool) {
         if (_allowances[sender][msg.sender] != ~uint256(0)) {
             _allowances[sender][msg.sender] = _allowances[sender][msg.sender]
                 .sub(amount, "Insufficient Allowance");

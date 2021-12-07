@@ -1,0 +1,9 @@
+# Set solidity version
+export DAPP_SOLC_VERSION=0.8.10
+
+# To surpress $(dapp remappings) error
+export DAPP_REMAPPINGS=""
+
+# Activate the optimizer
+export DAPP_BUILD_OPTIMIZE=1
+export DAPP_BUILD_OPTIMIZE_RUNS=1000000
