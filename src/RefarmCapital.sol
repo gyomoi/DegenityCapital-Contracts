@@ -6,8 +6,8 @@ u'all are not ready for this
 
 Tax for Buying/Selling: 10%
     - 3% of each transaction sent to holders as ETH transactions
-    - 3% of each transaction sent to Marketing Wallet
-    - 4% of each transaction sent to the Liquidity Pool
+    - 4% of each transaction sent to Treasury Wallet
+    - 3% of each transaction sent to the Liquidity Pool
 
 Earning Dashboard:
 https://refarm.capital
@@ -32,11 +32,11 @@ contract RefarmCapital is Ownable, IERC20 {
     address DEAD = 0x000000000000000000000000000000000000dEaD;
     address ZERO = 0x0000000000000000000000000000000000000000;
 
-    string private _name = "Refarm Capital";
+    string private _name = "Refarm";
     string private _symbol = "REFARM";
 
-    uint256 public marketingFeeBPS = 300;
-    uint256 public liquidityFeeBPS = 400;
+    uint256 public treasuryFeeBPS = 400;
+    uint256 public liquidityFeeBPS = 300;
     uint256 public dividendFeeBPS = 300;
     uint256 public totalFeeBPS = 1000;
 
@@ -439,7 +439,7 @@ contract RefarmCapital is Ownable, IERC20 {
 
         uint256 swapTokensMarketing;
         if (address(marketingWallet) != address(0)) {
-            swapTokensMarketing = (tokens * marketingFeeBPS) / totalFeeBPS;
+            swapTokensMarketing = (tokens * treasuryFeeBPS) / totalFeeBPS;
         }
 
         uint256 swapTokensDividends;
@@ -545,14 +545,14 @@ contract RefarmCapital is Ownable, IERC20 {
     }
 
     function setFee(
-        uint256 _marketingFee,
+        uint256 _treasuryFee,
         uint256 _liquidityFee,
         uint256 _dividendFee
     ) external onlyOwner {
-        marketingFeeBPS = _marketingFee;
+        treasuryFeeBPS = _treasuryFee;
         liquidityFeeBPS = _liquidityFee;
         dividendFeeBPS = _dividendFee;
-        totalFeeBPS = _marketingFee + _liquidityFee + _dividendFee;
+        totalFeeBPS = _treasuryFee + _liquidityFee + _dividendFee;
     }
 
     function _setAutomatedMarketMakerPair(address pair, bool value) private {
