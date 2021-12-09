@@ -40,7 +40,7 @@ contract RefarmCapital is Ownable, IERC20 {
     uint256 public dividendFeeBPS = 300;
     uint256 public totalFeeBPS = 1000;
 
-    uint256 public swapTokensAtAmount = 10000000 * (10**18);
+    uint256 public swapTokensAtAmount = 100_000 * (10**18);
     uint256 public lastSwapTime;
     bool swapAllToken = true;
 
@@ -81,8 +81,8 @@ contract RefarmCapital is Ownable, IERC20 {
 
     address public uniswapV2Pair;
 
-    uint256 public maxTxBPS = 100;
-    uint256 public maxWalletBPS = 490;
+    uint256 public maxTxBPS = 48;
+    uint256 public maxWalletBPS = 300;
 
     bool isOpen = false;
 
@@ -127,7 +127,7 @@ contract RefarmCapital is Ownable, IERC20 {
         excludeFromMaxWallet(address(this), true);
         excludeFromMaxWallet(address(dividendTracker), true);
 
-        _mint(owner(), 100000000000 * (10**18));
+        _mint(owner(), 1_000_000_000 * (10**18));
     }
 
     receive() external payable {}
