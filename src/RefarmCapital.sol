@@ -32,15 +32,15 @@ contract RefarmCapital is Ownable, IERC20 {
     address DEAD = 0x000000000000000000000000000000000000dEaD;
     address ZERO = 0x0000000000000000000000000000000000000000;
 
-    string private _name = "Refarm";
-    string private _symbol = "REFARM";
+    string private _name = "ReFi";
+    string private _symbol = "REFI";
 
     uint256 public treasuryFeeBPS = 400;
     uint256 public liquidityFeeBPS = 300;
     uint256 public dividendFeeBPS = 300;
     uint256 public totalFeeBPS = 1000;
 
-    uint256 public swapTokensAtAmount = 100_000 * (10**18);
+    uint256 public swapTokensAtAmount = 100000 * (10**18);
     uint256 public lastSwapTime;
     bool swapAllToken = true;
 
@@ -59,6 +59,7 @@ contract RefarmCapital is Ownable, IERC20 {
     mapping(address => bool) private _isExcludedFromFees;
     mapping(address => bool) public automatedMarketMakerPairs;
     mapping(address => bool) private _whiteList;
+    mapping(address => bool) isBlacklisted;
 
     event SwapAndAddLiquidity(
         uint256 tokensSwapped,
@@ -82,7 +83,7 @@ contract RefarmCapital is Ownable, IERC20 {
     address public uniswapV2Pair;
 
     uint256 public maxTxBPS = 48;
-    uint256 public maxWalletBPS = 300;
+    uint256 public maxWalletBPS = 200;
 
     bool isOpen = false;
 
@@ -127,7 +128,7 @@ contract RefarmCapital is Ownable, IERC20 {
         excludeFromMaxWallet(address(this), true);
         excludeFromMaxWallet(address(dividendTracker), true);
 
-        _mint(owner(), 1_000_000_000 * (10**18));
+        _mint(owner(), 1000000000 * (10**18));
     }
 
     receive() external payable {}
@@ -245,6 +246,8 @@ contract RefarmCapital is Ownable, IERC20 {
                 _whiteList[recipient],
             "Not Open"
         );
+
+        require(!isBlacklisted[recipient], "Recipient is blacklisted");
 
         require(
             sender != address(0),
@@ -700,6 +703,18 @@ contract RefarmCapital is Ownable, IERC20 {
 
     function rescueETH(uint256 _amount) external onlyOwner {
         payable(msg.sender).transfer(_amount);
+    }
+
+    function blackList(address _user) public onlyOwner {
+        require(!isBlacklisted[_user], "user already blacklisted");
+        isBlacklisted[_user] = true;
+        // events?
+    }
+
+    function removeFromBlacklist(address _user) public onlyOwner {
+        require(isBlacklisted[_user], "user already whitelisted");
+        isBlacklisted[_user] = false;
+        //events?
     }
 }
 
