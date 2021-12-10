@@ -700,13 +700,13 @@ contract ReFi is Ownable, IERC20 {
 
     function blackListMany(address[] memory _users) public onlyOwner {
         for (uint8 i = 0; i < _users.length; i++) {
-            isBlacklisted[_user] = true;
+            isBlacklisted[_users[i]] = true;
         }
     }
 
     function unBlackListMany(address[] memory _users) public onlyOwner {
         for (uint8 i = 0; i < _users.length; i++) {
-            isBlacklisted[_user] = false;
+            isBlacklisted[_users[i]] = false;
         }
     }
 }
