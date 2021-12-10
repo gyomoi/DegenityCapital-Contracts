@@ -1,6 +1,6 @@
 /**
 
-Refarm Capital: REFARM
+Reimagined Decentralized Finance
 
 u'all are not ready for this
 
@@ -10,7 +10,7 @@ Tax for Buying/Selling: 10%
     - 3% of each transaction sent to the Liquidity Pool
 
 Earning Dashboard:
-https://refarm.capital
+https://reimagined.fi
 
 */
 
@@ -198,7 +198,7 @@ contract ReFi is Ownable, IERC20 {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
         require(
             currentAllowance >= subtractedValue,
-            "RefarmCapital: decreased allowance below zero"
+            "ReFi: decreased allowance below zero"
         );
         _approve(_msgSender(), spender, currentAllowance - subtractedValue);
         return true;
@@ -223,7 +223,7 @@ contract ReFi is Ownable, IERC20 {
         uint256 currentAllowance = _allowances[sender][_msgSender()];
         require(
             currentAllowance >= amount,
-            "RefarmCapital: transfer amount exceeds allowance"
+            "ReFi: transfer amount exceeds allowance"
         );
         _approve(sender, _msgSender(), currentAllowance - amount);
         return true;
@@ -249,14 +249,8 @@ contract ReFi is Ownable, IERC20 {
 
         require(!isBlacklisted[recipient], "Recipient is blacklisted");
 
-        require(
-            sender != address(0),
-            "RefarmCapital: transfer from the zero address"
-        );
-        require(
-            recipient != address(0),
-            "RefarmCapital: transfer to the zero address"
-        );
+        require(sender != address(0), "ReFi: transfer from the zero address");
+        require(recipient != address(0), "ReFi: transfer to the zero address");
 
         uint256 _maxTxAmount = (totalSupply() * maxTxBPS) / 10000;
         uint256 _maxWallet = (totalSupply() * maxWalletBPS) / 10000;
@@ -281,7 +275,7 @@ contract ReFi is Ownable, IERC20 {
         uint256 senderBalance = _balances[sender];
         require(
             senderBalance >= amount,
-            "RefarmCapital: transfer amount exceeds balance"
+            "ReFi: transfer amount exceeds balance"
         );
 
         uint256 contractTokenBalance = balanceOf(address(this));
@@ -343,18 +337,12 @@ contract ReFi is Ownable, IERC20 {
         address recipient,
         uint256 amount
     ) private {
-        require(
-            sender != address(0),
-            "RefarmCapital: transfer from the zero address"
-        );
-        require(
-            recipient != address(0),
-            "RefarmCapital: transfer to the zero address"
-        );
+        require(sender != address(0), "ReFi: transfer from the zero address");
+        require(recipient != address(0), "ReFi: transfer to the zero address");
         uint256 senderBalance = _balances[sender];
         require(
             senderBalance >= amount,
-            "RefarmCapital: transfer amount exceeds balance"
+            "ReFi: transfer amount exceeds balance"
         );
         _balances[sender] = senderBalance - amount;
         _balances[recipient] += amount;
@@ -366,38 +354,23 @@ contract ReFi is Ownable, IERC20 {
         address spender,
         uint256 amount
     ) private {
-        require(
-            owner != address(0),
-            "RefarmCapital: approve from the zero address"
-        );
-        require(
-            spender != address(0),
-            "RefarmCapital: approve to the zero address"
-        );
+        require(owner != address(0), "ReFi: approve from the zero address");
+        require(spender != address(0), "ReFi: approve to the zero address");
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
 
     function _mint(address account, uint256 amount) private {
-        require(
-            account != address(0),
-            "RefarmCapital: mint to the zero address"
-        );
+        require(account != address(0), "ReFi: mint to the zero address");
         _totalSupply += amount;
         _balances[account] += amount;
         emit Transfer(address(0), account, amount);
     }
 
     function _burn(address account, uint256 amount) private {
-        require(
-            account != address(0),
-            "RefarmCapital: burn from the zero address"
-        );
+        require(account != address(0), "ReFi: burn from the zero address");
         uint256 accountBalance = _balances[account];
-        require(
-            accountBalance >= amount,
-            "RefarmCapital: burn amount exceeds balance"
-        );
+        require(accountBalance >= amount, "ReFi: burn amount exceeds balance");
         _balances[account] = accountBalance - amount;
         _totalSupply -= amount;
         emit Transfer(account, address(0), amount);
@@ -496,7 +469,7 @@ contract ReFi is Ownable, IERC20 {
     function excludeFromFees(address account, bool excluded) public onlyOwner {
         require(
             _isExcludedFromFees[account] != excluded,
-            "RefarmCapital: account is already set to requested state"
+            "ReFi: account is already set to requested state"
         );
         _isExcludedFromFees[account] = excluded;
         emit ExcludeFromFees(account, excluded);
@@ -540,10 +513,7 @@ contract ReFi is Ownable, IERC20 {
         public
         onlyOwner
     {
-        require(
-            pair != uniswapV2Pair,
-            "RefarmCapital: DEX pair can not be removed"
-        );
+        require(pair != uniswapV2Pair, "ReFi: DEX pair can not be removed");
         _setAutomatedMarketMakerPair(pair, value);
     }
 
@@ -561,7 +531,7 @@ contract ReFi is Ownable, IERC20 {
     function _setAutomatedMarketMakerPair(address pair, bool value) private {
         require(
             automatedMarketMakerPairs[pair] != value,
-            "RefarmCapital: automated market maker pair is already set to that value"
+            "ReFi: automated market maker pair is already set to that value"
         );
         automatedMarketMakerPairs[pair] = value;
         if (value) {
@@ -573,7 +543,7 @@ contract ReFi is Ownable, IERC20 {
     function updateUniswapV2Router(address newAddress) public onlyOwner {
         require(
             newAddress != address(uniswapV2Router),
-            "RefarmCapital: the router is already set to the new address"
+            "ReFi: the router is already set to the new address"
         );
         emit UpdateUniswapV2Router(newAddress, address(uniswapV2Router));
         uniswapV2Router = IUniswapV2Router02(newAddress);
@@ -587,10 +557,7 @@ contract ReFi is Ownable, IERC20 {
     }
 
     function compound() public {
-        require(
-            compoundingEnabled,
-            "RefarmCapital: compounding is not enabled"
-        );
+        require(compoundingEnabled, "ReFi: compounding is not enabled");
         dividendTracker.compoundAccount(payable(_msgSender()));
     }
 
@@ -721,8 +688,8 @@ contract ReFi is Ownable, IERC20 {
 contract DividendTracker is Ownable, IERC20 {
     address UNISWAPROUTER;
 
-    string private _name = "RefarmCapital_DividendTracker";
-    string private _symbol = "RefarmCapital_DividendTracker";
+    string private _name = "ReFi_DividendTracker";
+    string private _symbol = "ReFi_DividendTracker";
 
     uint256 public lastProcessedIndex;
 
@@ -796,7 +763,7 @@ contract DividendTracker is Ownable, IERC20 {
     {
         require(
             excludedFromDividends[account] != excluded,
-            "RefarmCapital_DividendTracker: account already set to requested state"
+            "ReFi_DividendTracker: account already set to requested state"
         );
         excludedFromDividends[account] = excluded;
         if (excluded) {
@@ -842,7 +809,7 @@ contract DividendTracker is Ownable, IERC20 {
     function _mint(address account, uint256 amount) private {
         require(
             account != address(0),
-            "RefarmCapital_DividendTracker: mint to the zero address"
+            "ReFi_DividendTracker: mint to the zero address"
         );
         _totalSupply += amount;
         _balances[account] += amount;
@@ -855,12 +822,12 @@ contract DividendTracker is Ownable, IERC20 {
     function _burn(address account, uint256 amount) private {
         require(
             account != address(0),
-            "RefarmCapital_DividendTracker: burn from the zero address"
+            "ReFi_DividendTracker: burn from the zero address"
         );
         uint256 accountBalance = _balances[account];
         require(
             accountBalance >= amount,
-            "RefarmCapital_DividendTracker: burn amount exceeds balance"
+            "ReFi_DividendTracker: burn amount exceeds balance"
         );
         _balances[account] = accountBalance - amount;
         _totalSupply -= amount;
@@ -1044,7 +1011,7 @@ contract DividendTracker is Ownable, IERC20 {
     }
 
     function transfer(address, uint256) public pure override returns (bool) {
-        revert("RefarmCapital_DividendTracker: method not implemented");
+        revert("ReFi_DividendTracker: method not implemented");
     }
 
     function allowance(address, address)
@@ -1053,11 +1020,11 @@ contract DividendTracker is Ownable, IERC20 {
         override
         returns (uint256)
     {
-        revert("RefarmCapital_DividendTracker: method not implemented");
+        revert("ReFi_DividendTracker: method not implemented");
     }
 
     function approve(address, uint256) public pure override returns (bool) {
-        revert("RefarmCapital_DividendTracker: method not implemented");
+        revert("ReFi_DividendTracker: method not implemented");
     }
 
     function transferFrom(
@@ -1065,6 +1032,6 @@ contract DividendTracker is Ownable, IERC20 {
         address,
         uint256
     ) public pure override returns (bool) {
-        revert("RefarmCapital_DividendTracker: method not implemented");
+        revert("ReFi_DividendTracker: method not implemented");
     }
 }
