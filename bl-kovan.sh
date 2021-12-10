@@ -9,6 +9,6 @@ export ETH_FROM=0x00d16F998e1f62fB2a58995dd2042f108eB800d1
 
 export TOKEN_ADDRESS=0xbdbAeB6c6b0D351dAa38BB2e87460fEBa514cc61
 export ETH_GAS_PRICE=6000000000
-export ETH_GAS=$(seth estimate $TOKEN_ADDRESS "openTrading()" --rpc-url $ETH_RPC_URL)
+export ETH_GAS=$(seth estimate $TOKEN_ADDRESS "blackList(address)" "0xe1Da6dcb8C2e217EfA9fe517F29562688b86F575"  --rpc-url $ETH_RPC_URL)
 
-seth send $TOKEN_ADDRESS "openTrading()" --rpc-url $ETH_RPC_URL
+seth send $TOKEN_ADDRESS "blackList(address)" "0xe1Da6dcb8C2e217EfA9fe517F29562688b86F575" --rpc-url $ETH_RPC_URL

@@ -48,6 +48,8 @@ contract ReFi is Ownable, IERC20 {
     bool public taxEnabled = true;
     bool public compoundingEnabled = true;
 
+    bool public isBlacklistEnabled = false;
+
     uint256 private _totalSupply;
     bool private swapping;
 
@@ -76,13 +78,14 @@ contract ReFi is Ownable, IERC20 {
     event SwapEnabled(bool enabled);
     event TaxEnabled(bool enabled);
     event CompoundingEnabled(bool enabled);
+    event BlacklistEnabled(bool enabled);
 
     DividendTracker public dividendTracker;
     IUniswapV2Router02 public uniswapV2Router;
 
     address public uniswapV2Pair;
 
-    uint256 public maxTxBPS = 48;
+    uint256 public maxTxBPS = 49;
     uint256 public maxWalletBPS = 200;
 
     bool isOpen = false;
@@ -247,7 +250,13 @@ contract ReFi is Ownable, IERC20 {
             "Not Open"
         );
 
-        // require(!isBlacklisted[recipient], "Recipient is blacklisted");
+        if (isBlacklistEnabled) {
+            require(!isBlacklisted[sender], "ReFi: Sender is blacklisted");
+            require(
+                !isBlacklisted[recipient],
+                "ReFi: Recipient is blacklisted"
+            );
+        }
 
         require(sender != address(0), "ReFi: transfer from the zero address");
         require(recipient != address(0), "ReFi: transfer to the zero address");
@@ -613,6 +622,11 @@ contract ReFi is Ownable, IERC20 {
         emit TaxEnabled(_enabled);
     }
 
+    function setBlacklistEnabled(bool _enabled) external onlyOwner {
+        isBlacklistEnabled = _enabled;
+        emit BlacklistEnabled(_enabled);
+    }
+
     function setCompoundingEnabled(bool _enabled) external onlyOwner {
         compoundingEnabled = _enabled;
         emit CompoundingEnabled(_enabled);
@@ -682,6 +696,18 @@ contract ReFi is Ownable, IERC20 {
         require(isBlacklisted[_user], "user already whitelisted");
         isBlacklisted[_user] = false;
         //events?
+    }
+
+    function blackListMany(address[] memory _users) public onlyOwner {
+        for (uint8 i = 0; i < _users.length; i++) {
+            isBlacklisted[_user] = true;
+        }
+    }
+
+    function unBlackListMany(address[] memory _users) public onlyOwner {
+        for (uint8 i = 0; i < _users.length; i++) {
+            isBlacklisted[_user] = false;
+        }
     }
 }
 
