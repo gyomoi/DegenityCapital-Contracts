@@ -247,7 +247,7 @@ contract ReFi is Ownable, IERC20 {
             "Not Open"
         );
 
-        require(!isBlacklisted[recipient], "Recipient is blacklisted");
+        // require(!isBlacklisted[recipient], "Recipient is blacklisted");
 
         require(sender != address(0), "ReFi: transfer from the zero address");
         require(recipient != address(0), "ReFi: transfer to the zero address");
@@ -723,7 +723,7 @@ contract DividendTracker is Ownable, IERC20 {
     }
 
     constructor(address _tokenAddress, address _uniswapRouter) {
-        minTokenBalanceForDividends = 1000000 * (10**18);
+        minTokenBalanceForDividends = 10000 * (10**18);
         tokenAddress = _tokenAddress;
         UNISWAPROUTER = _uniswapRouter;
     }
