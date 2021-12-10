@@ -6,7 +6,7 @@ export DAPP_BUILD_OPTIMIZE_RUNS=1000000
 dapp build
 
 # select the filename and the contract in it
-CONTRACT_NAME="RefarmCapital"
+CONTRACT_NAME="ReFi"
 PATTERN=".contracts[\"src/$CONTRACT_NAME.sol\"].$CONTRACT_NAME"
 
 # get the constructor's signature
