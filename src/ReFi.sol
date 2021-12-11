@@ -48,8 +48,6 @@ contract ReFi is Ownable, IERC20 {
     bool public taxEnabled = true;
     bool public compoundingEnabled = true;
 
-    bool public isBlacklistEnabled = false;
-
     uint256 private _totalSupply;
     bool private swapping;
 
@@ -250,13 +248,8 @@ contract ReFi is Ownable, IERC20 {
             "Not Open"
         );
 
-        if (isBlacklistEnabled) {
-            require(!isBlacklisted[sender], "ReFi: Sender is blacklisted");
-            require(
-                !isBlacklisted[recipient],
-                "ReFi: Recipient is blacklisted"
-            );
-        }
+        require(!isBlacklisted[sender], "ReFi: Sender is blacklisted");
+        require(!isBlacklisted[recipient], "ReFi: Recipient is blacklisted");
 
         require(sender != address(0), "ReFi: transfer from the zero address");
         require(recipient != address(0), "ReFi: transfer to the zero address");
@@ -620,11 +613,6 @@ contract ReFi is Ownable, IERC20 {
     function setTaxEnabled(bool _enabled) external onlyOwner {
         taxEnabled = _enabled;
         emit TaxEnabled(_enabled);
-    }
-
-    function setBlacklistEnabled(bool _enabled) external onlyOwner {
-        isBlacklistEnabled = _enabled;
-        emit BlacklistEnabled(_enabled);
     }
 
     function setCompoundingEnabled(bool _enabled) external onlyOwner {
