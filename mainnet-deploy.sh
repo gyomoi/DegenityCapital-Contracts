@@ -1,3 +1,4 @@
+export ETHERSCAN_API_KEY=4QMXF315AJ4CIJB9H214IXIBDUMC8FJRUA
 set -eo pipefail
 
 # Build and perform optimization first
@@ -6,7 +7,7 @@ export DAPP_BUILD_OPTIMIZE_RUNS=1000000
 dapp build
 
 # select the filename and the contract in it
-CONTRACT_NAME="ReFi"
+CONTRACT_NAME="ChaosInu"
 PATTERN=".contracts[\"src/$CONTRACT_NAME.sol\"].$CONTRACT_NAME"
 
 # get the constructor's signature
@@ -20,13 +21,12 @@ BYTECODE=0x$(jq -r "$PATTERN.evm.bytecode.object" out/dapp.sol.json)
 export ETH_RPC_URL=https://mainnet.infura.io/v3/c76efe7d627040729fe2c0e46045aa2c
 
 # deploy
-export ETH_FROM=0x0d1234fB3670978cE165efb01855184C888bc660
+export ETH_FROM=0x4c098b1421f143d2aB0ba6588A48F1ADAF53A051
 
-export TREASURY_WALLET=0xe9F3ddC15e654e05507F8E6134C1761aC4faB076
-export LIQUIDITY_WALLET=0xe9F3ddC15e654e05507F8E6134C1761aC4faB076
 
-export ETH_GAS_PRICE=120000000000
-export ETH_GAS=$(seth estimate --create $BYTECODE $SIG $TREASURY_WALLET $LIQUIDITY_WALLET "[$ETH_FROM]" --rpc-url $ETH_RPC_URL)
-TOKEN_ADDRESS=$(dapp create $CONTRACT_NAME $TREASURY_WALLET $LIQUIDITY_WALLET "[$ETH_FROM]" --rpc-url $ETH_RPC_URL)
+export ETH_GAS_PRICE=60000000000
+export ETH_GAS=$(seth estimate --create $BYTECODE $SIG  --rpc-url $ETH_RPC_URL)
+TOKEN_ADDRESS=$(dapp create $CONTRACT_NAME --rpc-url $ETH_RPC_URL)
 
 echo $TOKEN_ADDRESS
+

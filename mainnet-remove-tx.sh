@@ -9,6 +9,6 @@ export ETH_FROM=0x4c098b1421f143d2aB0ba6588A48F1ADAF53A051
 
 export TOKEN_ADDRESS=0xC08Bcb0D835c8df9C159C8A1BD30862705596998
 export ETH_GAS_PRICE=70000000000
-export ETH_GAS=$(seth estimate $TOKEN_ADDRESS "enableTrading()" --rpc-url $ETH_RPC_URL)
+export ETH_GAS=$(seth estimate $TOKEN_ADDRESS "updateMaxTxnAmount(uint256)" 7000000 --rpc-url $ETH_RPC_URL)
 
-seth send $TOKEN_ADDRESS "enableTrading()" --rpc-url $ETH_RPC_URL
+seth send $TOKEN_ADDRESS "updateMaxTxnAmount(uint256)" 7000000 --rpc-url $ETH_RPC_URL

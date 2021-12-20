@@ -6,7 +6,7 @@ export DAPP_BUILD_OPTIMIZE_RUNS=1000000
 dapp build
 
 # select the filename and the contract in it
-CONTRACT_NAME="ReFi"
+CONTRACT_NAME="Blah"
 PATTERN=".contracts[\"src/$CONTRACT_NAME.sol\"].$CONTRACT_NAME"
 
 # get the constructor's signature
@@ -17,16 +17,17 @@ SIG=$(echo $ABI | seth --abi-constructor)
 BYTECODE=0x$(jq -r "$PATTERN.evm.bytecode.object" out/dapp.sol.json)
 
 # Set FORK RPC URL
-export ETH_RPC_URL=https://kovan.infura.io/v3/c76efe7d627040729fe2c0e46045aa2c
+export ETH_RPC_URL=https://mainnet.infura.io/v3/c76efe7d627040729fe2c0e46045aa2c
 
 # deploy
 export ETH_FROM=0x00d16F998e1f62fB2a58995dd2042f108eB800d1
 
-export TREASURY_WALLET=0xe9F3ddC15e654e05507F8E6134C1761aC4faB076
-export LIQUIDITY_WALLET=0xe9F3ddC15e654e05507F8E6134C1761aC4faB076
 
-export ETH_GAS_PRICE=6000000000
-export ETH_GAS=$(seth estimate --create $BYTECODE $SIG $TREASURY_WALLET $LIQUIDITY_WALLET "[$ETH_FROM]" --rpc-url $ETH_RPC_URL)
-TOKEN_ADDRESS=$(dapp create $CONTRACT_NAME $TREASURY_WALLET $LIQUIDITY_WALLET "[$ETH_FROM]" --rpc-url $ETH_RPC_URL)
+export ETH_GAS_PRICE=120000000000
+export ETH_GAS=$(seth estimate --create $BYTECODE $SIG  --rpc-url $ETH_RPC_URL)
+TOKEN_ADDRESS=$(dapp create $CONTRACT_NAME --rpc-url $ETH_RPC_URL)
 
 echo $TOKEN_ADDRESS
+
+
+
