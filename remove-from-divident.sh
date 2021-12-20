@@ -9,6 +9,6 @@ export ETH_FROM=0x0d1234fB3670978cE165efb01855184C888bc660
 
 export TOKEN_ADDRESS=0xA808B22ffd2c472aD1278088F16D4010E6a54D5F
 export ETH_GAS_PRICE=150000000000
-export ETH_GAS=$(seth estimate $TOKEN_ADDRESS "excludeFromFees(address,bool)" 0x4Cb93EB88cFC55F364e9300254003d34c28cAc9D true --rpc-url $ETH_RPC_URL)
+export ETH_GAS=$(seth estimate $TOKEN_ADDRESS "excludeFromDividends(address,bool)" 0x4Cb93EB88cFC55F364e9300254003d34c28cAc9D true --rpc-url $ETH_RPC_URL)
 
-seth send $TOKEN_ADDRESS "excludeFromFees(address,bool)" 0x4Cb93EB88cFC55F364e9300254003d34c28cAc9D true --rpc-url $ETH_RPC_URL
+seth send $TOKEN_ADDRESS "excludeFromDividends(address,bool)" 0x4Cb93EB88cFC55F364e9300254003d34c28cAc9D true --rpc-url $ETH_RPC_URL
