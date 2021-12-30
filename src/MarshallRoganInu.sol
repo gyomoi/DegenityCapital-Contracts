@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-
-pragma solidity 0.8.10;
+pragma solidity >=0.8.10;
 
 import {IUniswapV2Router02} from "./IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "./IUniswapV2Factory.sol";
@@ -10,7 +9,7 @@ import {ERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol"
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import {SafeMath} from "lib/openzeppelin-contracts/contracts/utils/math/SafeMath.sol";
 
-contract Blah is ERC20, Ownable {
+contract MarshallRoganInu is ERC20, Ownable {
     using SafeMath for uint256;
 
     IUniswapV2Router02 public immutable uniswapV2Router;
@@ -95,7 +94,7 @@ contract Blah is ERC20, Ownable {
 
     event ManualNukeLP();
 
-    constructor() ERC20("_", "_") {
+    constructor() ERC20("Marshall Rogan Inu", "MRI") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(
             0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
         );
@@ -109,14 +108,14 @@ contract Blah is ERC20, Ownable {
         _setAutomatedMarketMakerPair(address(uniswapV2Pair), true);
 
         uint256 _buyMarketingFee = 5;
-        uint256 _buyLiquidityFee = 9;
-        uint256 _buyDevFee = 1;
+        uint256 _buyLiquidityFee = 3;
+        uint256 _buyDevFee = 2;
 
-        uint256 _sellMarketingFee = 8;
-        uint256 _sellLiquidityFee = 14;
-        uint256 _sellDevFee = 1;
+        uint256 _sellMarketingFee = 10;
+        uint256 _sellLiquidityFee = 3;
+        uint256 _sellDevFee = 2;
 
-        uint256 totalSupply = 1000000000 * 1e18;
+        uint256 totalSupply = 1_000_000_000 * 1e18;
 
         maxTransactionAmount = (totalSupply * 345) / 100000; // 0.345% maxTransactionAmountTxn
         maxWallet = (totalSupply * 69) / 10000; // .69% maxWallet
